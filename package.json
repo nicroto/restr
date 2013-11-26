@@ -1,0 +1,42 @@
+{
+  "name": "restr",
+  "description": "REST API framework for Node.JS for Automatic Client API Generation and Easy Testing.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/nicroto/restr",
+  "author": {
+    "name": "NikolayTsenkov",
+    "email": "nikolay@tsenkov.net",
+    "url": "about.me/tsenkov"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nicroto/restr.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nicroto/restr/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/nicroto/restr/blob/master/LICENSE"
+    }
+  ],
+  "main": "src/restr",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "dependencies": {
+    "express": ""
+  },
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.6.4",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt": "~0.4.1",
+    "grunt-simple-mocha": "~0.4.0",
+    "mocha": "~1.13.0"
+  },
+  "keywords": []
+}
