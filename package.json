@@ -29,7 +29,8 @@
     "test": "grunt"
   },
   "dependencies": {
-    "express": ""
+    "express": "",
+    "optimist": "~0.6.0"
   },
   "devDependencies": {
     "grunt-contrib-jshint": "~0.6.4",
@@ -38,5 +39,8 @@
     "grunt-simple-mocha": "~0.4.0",
     "mocha": "~1.13.0"
   },
-  "keywords": []
+  "bin": {
+    "ragr" : "bin/ragr"
+  },
+  "keywords": ["rest", "api", "client", "framework"]
 }
