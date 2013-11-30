@@ -8,7 +8,12 @@ module.exports = function(grunt) {
 			all: ['src/**/*.js', 'test/**/*.js', 'Gruntfile.js'],
 			checkstyle: 'checkstyle.xml',
 			options: {
-				jshintrc: '.jshintrc'
+				jshintrc: '.jshintrc',
+				ignores: [
+					'**/*-template.js',
+					'src/custom-modules/restr-client-utils.js',
+					'**/*-temp.js'
+				]
 			},
 			gruntfile: {
 				src: 'Gruntfile.js'

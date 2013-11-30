@@ -1,0 +1,181 @@
+;(function() {
+
+var utils = {
+
+	validateStringArgument: function(arg) {
+		if ( typeof(arg) !== "string" ) {
+			throw new Error("argument is not a string.");
+		}
+	},
+
+	validateNumberArgument: function(arg) {
+		if ( typeof(arg) !== "number" ) {
+			throw new Error("argument is not a number.");
+		}
+	},
+
+	combinePaths: function() {
+		if ( arguments.length === 0 ) {
+			throw new Error("no arguments passed!");
+		}
+
+		var self = this,
+			paths = arguments,
+			result = paths[0];
+
+		self.validateStringArgument(result);
+
+		for ( var i = 1; i < paths.length; i++ ) {
+			var delimiter = "/",
+				path = paths[i];
+
+			self.validateStringArgument(path);
+
+			if ( result[result.length - 1] === "/" ) {
+				result = result.slice(0, -1);
+			}
+			if ( path[0] === "/" ) {
+				delimiter = "";
+			}
+			result += delimiter + paths[i];
+		}
+
+		return result;
+	}
+
+};
+
+function serverAPI(conf) {
+	var self = this;
+	self.userService.parent = self;
+	self.dataService.parent = self;
+
+	self.root = conf.root ? conf.root : "";
+	self.makeRequest = conf.makeRequest;
+}
+
+serverAPI.prototype = {
+
+	root: "",
+	makeRequest: null,
+
+	userService: {
+
+		parent: null,
+
+		updateUser: function(args, callback) {
+			var self = this;
+
+			utils.validateStringArgument(args.name);
+			utils.validateStringArgument(args.description);
+
+			var route = utils.combinePaths(
+					self.parent.root,
+					"/api/user/:id/:otherId?"
+						.replace(":id", args.id)
+						.replace(":otherId?", args.otherId ? args.otherId : "")
+				),
+				queryArgs = {},
+				bodyArgs = {},
+				verb = "put";
+
+			queryArgs.name = args.name;
+			bodyArgs.description = args.description;
+
+			self.parent.makeRequest(
+				verb,
+				route,
+				queryArgs,
+				bodyArgs,
+				callback
+			);
+		},
+
+		getUser: function(args, callback) {
+			var self = this;
+
+			var route = utils.combinePaths(
+					self.parent.root,
+					"/api/user/:id"
+						.replace(":id", args.id)
+				),
+				queryArgs = {},
+				bodyArgs = {},
+				verb = "get";
+
+			self.parent.makeRequest(
+				verb,
+				route,
+				queryArgs,
+				bodyArgs,
+				callback
+			);
+		}
+
+	},
+
+	dataService: {
+
+		parent: null,
+
+		updateData: function(args, callback) {
+			var self = this;
+
+			utils.validateStringArgument(args.itemName);
+			utils.validateNumberArgument(args.quantity);
+
+			var route = utils.combinePaths(
+					self.parent.root,
+					"/api/data/:id"
+						.replace(":id", args.id)
+				),
+				queryArgs = {},
+				bodyArgs = {},
+				verb = "put";
+
+			bodyArgs.itemName = args.itemName;
+			bodyArgs.quantity = args.quantity;
+
+			self.parent.makeRequest(
+				verb,
+				route,
+				queryArgs,
+				bodyArgs,
+				callback
+			);
+		},
+
+		deleteData: function(args, callback) {
+			var self = this;
+
+			var route = utils.combinePaths(
+					self.parent.root,
+					"/api/data/:id"
+						.replace(":id", args.id)
+				),
+				queryArgs = {},
+				bodyArgs = {},
+				verb = "delete";
+
+			self.parent.makeRequest(
+				verb,
+				route,
+				queryArgs,
+				bodyArgs,
+				callback
+			);
+		}
+
+	}
+
+};
+
+if (typeof exports === "object") {
+	module.exports = serverAPI;
+} else if (typeof define == "function" && define.amd) {
+	define(function(){ return serverAPI; });
+} else {
+	window.serverAPI = serverAPI;
+}
+
+})();

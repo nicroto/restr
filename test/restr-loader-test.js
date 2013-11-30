@@ -19,19 +19,26 @@ var assert = require("assert"),
 	loader = new RestrLoader(expressApp);
 
 var goodServiceSpec = {
+	name: "userService",
 	methods: [
 		{
-			route: "/api/user",
-			name: "getUser",
+			route: "/api/user/:id/:otherId?",
+			name: "updateUser",
 			params: [
 				{
-					type: "String",
-					name: "fbID"
+					type: "string",
+					place: "query",
+					name: "name"
+				},
+				{
+					type: "string",
+					place: "body",
+					name: "description"
 				}
 			],
-			verb: "get",
-			logic: function(fbID) {
-				if ( fbID ) {}
+			verb: "put",
+			logic: function(req, res, id) {
+				if ( req && res && id ) {}
 
 				return true;
 			}
@@ -83,30 +90,6 @@ describe('RestrLoader', function() {
 			done();
 		});
 
-		it('should throw error if no spec is passed', function() {
-			assert.throws( function() {
-				loader.loadService();
-			}, Error );
-		});
-
-		it('should throw error if no methods are specified (no prop)', function() {
-			assert.throws( function() {
-				loader.loadService({});
-			}, Error );
-		});
-
-		it('should throw error if no methods are specified (null prop)', function() {
-			assert.throws( function() {
-				loader.loadService({ methods: null });
-			}, Error );
-		});
-
-		it('should throw error if no methods are specified (empty array)', function() {
-			assert.throws( function() {
-				loader.loadService({ methods: [] });
-			}, Error );
-		});
-
 		it('should throw error if no loader available (not expressApp, nor customLoader is set)', function() {
 			assert.throws( function() {
 				badLoader.loadService(goodServiceSpec);
@@ -118,91 +101,6 @@ describe('RestrLoader', function() {
 			var methodSpec = goodServiceSpec.methods[0];
 			var funcName = methodSpec.verb + methodSpec.route;
 			assert.ok(expressApp.map[funcName](), "funcName = " + funcName + "\n" + JSON.stringify(expressApp));
-		});
-
-	});
-
-	describe('validateRoot', function() {
-
-		it('should throw error if non-string passed', function() {
-			assert.throws( function() {
-				loader.validateRoot({});
-			}, Error );
-		});
-
-	});
-
-	describe('validateName', function() {
-
-		it('should throw error if it has spaces', function() {
-			assert.throws( function() {
-				loader.validateName(" name");
-			}, Error );
-		});
-
-		it('should throw error if starting with number', function() {
-			assert.throws( function() {
-				loader.validateName("1name");
-			}, Error );
-		});
-
-		it('should throw error if contains non-allowed symbols', function() {
-			assert.throws( function() {
-				loader.validateName("#name");
-			}, Error );
-			assert.throws( function() {
-				loader.validateName("name.");
-			}, Error );
-			assert.throws( function() {
-				loader.validateName("+name");
-			}, Error );
-			assert.throws( function() {
-				loader.validateName("name&");
-			}, Error );
-		});
-
-		it('should not throw an error if valid name', function() {
-			loader.validateName("name");
-			loader.validateName("name$");
-			loader.validateName("$name");
-			loader.validateName("$elABcd123");
-		});
-
-	});
-
-	describe('validateVerb', function() {
-
-		it('should throw error if unknown verb is used', function() {
-			assert.throws( function() {
-				loader.validateVerb("remove");
-			}, Error );
-		});
-
-		it('should not throw error if known verb is used', function() {
-			loader.validateVerb("get");
-			loader.validateVerb("post");
-			loader.validateVerb("put");
-			loader.validateVerb("delete");
-		});
-
-	});
-
-	describe('validateLogic', function() {
-
-		it('should throw error if no argument passed', function() {
-			assert.throws( function() {
-				loader.validateLogic();
-			}, Error );
-		});
-
-		it('should throw error if object is passed', function() {
-			assert.throws( function() {
-				loader.validateLogic({});
-			}, Error );
-		});
-
-		it('should not throw error if function is passed', function() {
-			loader.validateLogic(function() {});
 		});
 
 	});
