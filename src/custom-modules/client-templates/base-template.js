@@ -2,7 +2,7 @@
 
 {{utils}}
 
-function serverAPI(conf) {
+function ServerAPI(conf) {
 	var self = this;{{#each serviceNames}}
 	self.{{this}}.parent = self;{{/each}}
 
@@ -10,7 +10,7 @@ function serverAPI(conf) {
 	self.makeRequest = conf.makeRequest;
 }
 
-serverAPI.prototype = {
+ServerAPI.prototype = {
 
 	root: "",
 	makeRequest: null,
@@ -20,11 +20,11 @@ serverAPI.prototype = {
 };
 
 if (typeof exports === "object") {
-	module.exports = serverAPI;
+	module.exports = ServerAPI;
 } else if (typeof define == "function" && define.amd) {
-	define(function(){ return serverAPI; });
+	define(function(){ return ServerAPI; });
 } else {
-	window.serverAPI = serverAPI;
+	window.ServerAPI = ServerAPI;
 }
 
 })();

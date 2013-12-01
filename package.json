@@ -1,6 +1,6 @@
 {
   "name": "restr",
-  "description": "REST API framework for Node.JS for Automatic Client API Generation and Easy Testing.",
+  "description": "REST API framework for Node.JS for Automatic Generation of Client lib for accessing your server API.",
   "version": "0.1.0",
   "homepage": "https://github.com/nicroto/restr",
   "author": {
@@ -43,11 +43,13 @@
     "mocha": "~1.13.0"
   },
   "bin": {
-    "ragr": "bin/ragr"
+    "restr": "bin/restr"
   },
   "keywords": [
     "rest",
     "api",
+    "automation",
+    "codegeneration",
     "client",
     "framework"
   ]

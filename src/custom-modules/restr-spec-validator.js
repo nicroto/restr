@@ -13,18 +13,34 @@ var SpecValidator = {
 
 		var methods = spec.methods;
 
-		for ( var i = 0; i < methods.length; i++ ) {
-			self.validateMethodSpec( methods[i] );
+		try {
+			self.validateName(spec.name);
+			for ( var i = 0; i < methods.length; i++ ) {
+				self.validateMethodSpec( methods[i] );
+			}
+		} catch(e) {
+			throw new Error([
+				e,
+				"Error validating spec for " + spec.name
+			].join("\n"));
 		}
 	},
 
 	validateMethodSpec: function(spec) {
 		var self = this;
 
-		self.validateRoot( spec.route );
-		self.validateName( spec.name );
-		self.validateVerb( spec.verb );
-		self.validateLogic( spec.logic );
+		try {
+			self.validateParams( spec.params );
+			self.validateRoot( spec.route );
+			self.validateName( spec.name );
+			self.validateVerb( spec.verb );
+			self.validateLogic( spec.logic );
+		} catch(e) {
+			throw new Error([
+				e,
+				"Error validating method " + spec.name
+			].join("\n"));
+		}
 	},
 
 	validateRoot: function(route) {
@@ -82,7 +98,7 @@ var SpecValidator = {
 
 			// unknown type
 			if ( type !== "string" && type !== "number" ) {
-				throw new Error("unknown type is specified in the spec.");
+				throw new Error("unknown param type is specified in the spec.");
 			}
 
 			// unknown place

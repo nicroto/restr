@@ -12,7 +12,6 @@ ExpressAppMock.prototype = {
 };
 
 var assert = require("assert"),
-	customLoader = function() { return true; },
 	RestrLoader = require('../src/custom-modules/restr-loader.js'),
 	badLoader = new RestrLoader(),
 	expressApp = new ExpressAppMock(),
@@ -52,7 +51,7 @@ describe('RestrLoader', function() {
 
 		before(function(done){
 			loader = new RestrLoader();
-			loader.customLoader = customLoader;
+			loader.customLoader = function() { return true; };
 			done();
 		});
 

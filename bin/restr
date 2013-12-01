@@ -2,3 +2,100 @@
 // -*- js -*-
 
 "use strict";
+
+var fs = require("fs"),
+	pathUtils = require("path"),
+	optimist = require("optimist"),
+	Restr = require("../src/restr");
+
+var argv = optimist
+	.usage(["Usage:",
+		"	$0 --validate <filePath> [<filePath> ... <filePath>]",
+		"	$0 --generate <filePath> [<filePath> ... <filePath>] --dest <destFilePath>"
+	].join("\n"))
+	.describe("validate", "Validate (show errors) in Restr service specs.")
+	.describe("generate", "Generate client-side API.")
+	.alias("v", "validate")
+	.alias("g", "generate")
+	.alias("d", "dest")
+	.default("dest", "restr-generated-client-api.js")
+	.boolean("validate")
+	.boolean("generate")
+	.string("dest")
+	.argv;
+
+var utils = {
+
+	goodExit: function(str) {
+		if (str) console.log(str);
+		process.exit(0);
+	},
+
+	badExit: function(str) {
+		if (str) console.log("Error: " + str);
+		process.exit(1);
+	},
+
+	validatePath: function(path) {
+		var exists = fs.existsSync(path);
+		if ( !exists ) {
+			throw new Error("This path:" + path + " doesn't exist.");
+		}
+	},
+
+	loadSpecs: function(paths) {
+		var specs = [];
+		for ( var i = 0; i < paths.length; i++ ) {
+			var path = pathUtils.resolve( paths[i] );
+			utils.validatePath( path );
+			specs.push(
+				require( path )
+			);
+		}
+
+		return specs;
+	}
+
+}
+
+if ( argv.v || argv.validate ) {
+	if ( argv._ && (argv._.length >= 1) ) {
+		validate( argv._ );
+	} else {
+		utils.badExit("You need to specify at least one file.");
+	}
+} else if ( argv.g || argv.generate ) {
+	if ( argv._ && (argv._.length >= 1) ) {
+		generateAPI( argv._, argv.dest );
+	} else {
+		utils.badExit("You need to specify at least one spec file.");
+	}
+} else {
+	utils.goodExit(optimist.help());
+}
+
+function validate(paths) {
+	var specs = utils.loadSpecs(paths);
+
+	try {
+		Restr.validateSpecs(specs);
+	} catch (e) {
+		utils.badExit(e);
+	}
+
+	utils.goodExit("Spec(s) is/are valid!");
+}
+
+function generateAPI(paths, destPath) {
+	var destPath = pathUtils.resolve( destPath );
+	var specs = utils.loadSpecs(paths);
+
+	var clientAPI = Restr.generateClient(specs);
+
+	fs.writeFileSync(
+		destPath,
+		clientAPI
+	);
+
+	utils.goodExit("API successfully generated and written in " + destPath);
+}

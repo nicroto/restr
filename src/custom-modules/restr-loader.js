@@ -50,7 +50,7 @@ Loader.prototype = {
 			};
 			self.expressApp[verb]( route, finalFunc );
 		} else if ( self.customLoader ) {
-			self.customLoader(serviceSelf, route, verb, logic);
+			self.customLoader(serviceSelf, name, route, verb, logic);
 		} else {
 			throw new Error("Restr: Loader: loadMethod: no loader available. Check the documentation for the proper ways of initialization.");
 		}
