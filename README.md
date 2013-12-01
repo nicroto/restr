@@ -203,7 +203,6 @@ var server = new ServerAPI( {
 			});
 	}
 } );
-
 ```
 
  - You can require it in web app using RequireJS:
@@ -231,7 +230,6 @@ define( ["superagent", "rest-api-client"], function(request, ServerAPI) {
 		}
 	} );
 } );
-
 ```
 
 ## Release History
