@@ -161,7 +161,7 @@ You can use the generated script in 3 different ways:
 
  - You can add it to a page with a script tag. Then a global var **ServerAPI** will be created.
 
- ```html
+```html
 <script type="text/javascript" src="rest-api-client.js"></script>
 <!-- ... -->
 <script type="text/javascript">
@@ -207,7 +207,7 @@ var server = new ServerAPI( {
 
  - You can require it in web app using RequireJS:
 
- ```javascript
+```javascript
 /* RequireJS's 'require' is different from the one in NodeJS */
 
 define( ["superagent", "rest-api-client"], function(request, ServerAPI) {
