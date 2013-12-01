@@ -1,12 +1,12 @@
 # restr [![Build Status](https://secure.travis-ci.org/nicroto/restr.png?branch=master)](http://travis-ci.org/nicroto/restr)
 
-REST API framework for Node.JS for Automatic Generation of Client lib for accessing your server API.
+Framework for Node.JS for Automatic Generation of Client lib for accessing your server API.
 
-Restr requires your REST API to be written in accordance to the Restr Service Specification. While still in its infancy, this specification aims at adding as little overhead as possible.
+Restr requires your REST API to be written in accordance to the Restr Service Specification. While still in its infancy, this specification aims at adding as little overhead as possible, while enabling features, such as validation of transferred data.
 
 Having all services written using the Restr Spec, you can use the CLI tool restr to **validate** these specs and **generate the client-side JavaScript code**, which usually is done manually as you add, change or remove methods and whole service to/in/from the server API. The generated lib validates all passed data in accordance with the spec it was generated from.
 
-This simplifies significantly your workflow to *working on the server API -> regenerate the client code -> repeat*.
+This simplifies significantly your workflow to **working on the server API** -> **regenerate the client code** -> **repeat**.
 
 ## Getting Started
 
@@ -148,7 +148,7 @@ The biggest benefit of using Restr is that you can simply generate the client li
 Here is how you generate the client API lib on the sample we saw above
 
 ```bash
-$ restr --generate rest/user-service-spec.js rest/data-service.js --dest path/to/client/rest-api-client.js
+$ restr --generate rest/user-service-spec.js rest/data-service-spec.js --dest path/to/client/rest-api-client.js
 ```
 
 Validation is automatically being performed in the process of generation, so if there is something invalid in the spec, nothing will be produced and you should be able to see error pointing you to the validation issue.
