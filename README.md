@@ -345,6 +345,8 @@ define( ["superagent", "rest-api-client"], function(request, ServerAPI) {
  - Restr Spec parameters:
 	- Array
 	- Object
+ - Request batching
+ - Server Lambda's (client sends JavaScript to be executed on the server)
  - **I'm open for (reasonable) suggestions**
 
 ## Release History
