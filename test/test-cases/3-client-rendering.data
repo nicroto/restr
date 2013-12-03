@@ -5,18 +5,14 @@ var	specs = [
 			{
 				route: "/api/user/:id/:otherId?",
 				name: "updateUser",
-				params: [
-					{
-						type: "string",
-						place: "query",
-						name: "name"
+				params: {
+					query: {
+						name: "string"
 					},
-					{
-						type: "string",
-						place: "body",
-						name: "description"
+					body: {
+						description: "string"
 					}
-				],
+				},
 				verb: "put",
 				logic: function(req, res, id) {
 					if ( req && res && id ) {}
@@ -27,7 +23,6 @@ var	specs = [
 			{
 				route: "/api/user/:id",
 				name: "getUser",
-				params: [],
 				verb: "get",
 				logic: function(req, res, id) {
 					if ( req && res && id ) {}
@@ -43,18 +38,12 @@ var	specs = [
 			{
 				route: "/api/data/:id",
 				name: "updateData",
-				params: [
-					{
-						type: "string",
-						place: "body",
-						name: "itemName"
-					},
-					{
-						type: "number",
-						place: "body",
-						name: "quantity"
+				params: {
+					body: {
+						itemName: "string",
+						quantity: "number"
 					}
-				],
+				},
 				verb: "put",
 				logic: function(req, res, id) {
 					if ( req && res && id ) {}
@@ -65,7 +54,6 @@ var	specs = [
 			{
 				route: "/api/data/:id",
 				name: "deleteData",
-				params: [],
 				verb: "delete",
 				logic: function(req, res, id) {
 					if ( req && res && id ) {}

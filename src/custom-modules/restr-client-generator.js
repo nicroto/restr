@@ -6,6 +6,7 @@ var fs = require("fs"),
 	entities = new XmlEntities(),
 	express = require("express"),
 	validator = require("./restr-spec-validator"),
+	parser = require("./restr-param-parser"),
 	RestrLoader = require("./restr-loader");
 
 
@@ -125,7 +126,7 @@ ClientGenerator.prototype = {
 					/*"description"*/
 				]
 			},
-			params = spec.params;
+			params = parser.parseParams(spec.params);
 
 		for ( var i = 0; i < params.length; i++ ) {
 			var param = params[i];

@@ -23,18 +23,14 @@ var goodServiceSpec = {
 		{
 			route: "/api/user/:id/:otherId?",
 			name: "updateUser",
-			params: [
-				{
-					type: "string",
-					place: "query",
-					name: "name"
+			params: {
+				query: {
+					name: "string"
 				},
-				{
-					type: "string",
-					place: "body",
-					name: "description"
+				body: {
+					description: "string"
 				}
-			],
+			},
 			verb: "put",
 			logic: function(req, res, id) {
 				if ( req && res && id ) {}

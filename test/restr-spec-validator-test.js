@@ -1,33 +1,26 @@
 var assert = require("assert"),
 	validator = require("../src/custom-modules/restr-spec-validator");
 
-var badTypeParams1 = [
-		{
-			type: "string1111",
-			place: "query",
-			name: "name"
+var badTypeParams1 = {
+		query: {
+			name: "string1111"
 		}
-	],
-	badTypeParams2 = [
-		{
-			type: 1111,
-			place: "query",
-			name: "name"
+	},
+	badTypeParams2 = {
+		query: {
+			name: 1111
 		}
-	],
-	badPlaceParams = [
-		{
-			type: "string",
-			place: "query1111",
-			name: "name"
+	},
+	badPlaceParams = {
+		queryASD: {
+			name: "string"
 		}
-	],
-	badNameParams = [
-		{
-			type: "string",
-			place: "query"
+	},
+	badNameParams = {
+		query: {
+			" name": "string"
 		}
-	];
+	};
 
 var goodServiceSpec = {
 	name: "userService",
@@ -35,18 +28,14 @@ var goodServiceSpec = {
 		{
 			route: "/api/user/:id/:otherId?",
 			name: "updateUser",
-			params: [
-				{
-					type: "string",
-					place: "query",
-					name: "name"
+			params: {
+				query: {
+					name: "string"
 				},
-				{
-					type: "string",
-					place: "body",
-					name: "description"
+				body: {
+					description: "string"
 				}
-			],
+			},
 			verb: "put",
 			logic: function(req, res, id) {
 				if ( req && res && id ) {}
@@ -184,6 +173,12 @@ describe("RestrSpecValidator", function() {
 			}, Error );
 		});
 
+		it("should throw error if params passed isn't an object", function() {
+			assert.throws( function() {
+				validator.validateParams(function(){});
+			}, Error );
+		});
+
 		it("should throw error if unknown type specified", function() {
 			assert.throws( function() {
 				validator.validateParams(badTypeParams1);
@@ -196,7 +191,7 @@ describe("RestrSpecValidator", function() {
 			}, Error );
 		});
 
-		it("should throw error if unknown type place", function() {
+		it("should throw error if unknown section is used (non query or body)", function() {
 			assert.throws( function() {
 				validator.validateParams(badPlaceParams);
 			}, Error );

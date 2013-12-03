@@ -50,30 +50,29 @@ var spec = {
 		{
 			route: "/api/user/:id",
 			name: "getUser",
-			params: [],
 			verb: "get",
 			logic: function(req, res, id) {
-				// The action triggered on the specified route hit
+				if ( req && res && id ) {}
+
+				return true;
 			}
 		},
 		{
 			route: "/api/user/:id/:otherId?",
 			name: "updateUser",
-			params: [
-				{
-					type: "string", /* used for validation (so far only number and string are supported) */
-					place: "query", /* specifies where will the param reside (body or query) in the request */
-					name: "name"
+			params: {
+				query: {
+					name: "string"
 				},
-				{
-					type: "string",
-					place: "body",
-					name: "description"
+				body: {
+					description: "string"
 				}
-			],
+			},
 			verb: "put",
 			logic: function(req, res, id) {
-				// The action triggered on the specified route hit
+				if ( req && res && id ) {}
+
+				return true;
 			}
 		}
 	]
@@ -345,6 +344,7 @@ define( ["superagent", "rest-api-client"], function(request, ServerAPI) {
  - Restr Spec parameters:
 	- Array
 	- Object
+ - Server parameter validation
  - Request batching
  - Server Lambda's (client sends JavaScript to be executed on the server)
  - **I'm open for (reasonable) suggestions**

@@ -1,3 +1,5 @@
+'use strict';
+
 var SpecValidator = {
 
 	validateServiceSpec: function(spec) {
@@ -76,25 +78,42 @@ var SpecValidator = {
 	},
 
 	validateParams: function(params) {
+		var self = this;
+
 		if ( !params ) {
 			return;
 		}
 
-		for ( var i = 0; i < params.length; i++ ) {
-			var param = params[i],
-				type = param.type,
-				place = param.place,
-				name = param.name;
+		if ( typeof params !== "object" ) {
+			throw new Error("params section should be specified as an object");
+		}
 
-			// missing prop
-			if ( !type || !place || !name ) {
-				throw new Error("A property (type, place or name) is missing from the spec.");
+		Object.keys(params).forEach( function(key) {
+			if ( key !== "query" && key !== "body" ) {
+				throw new Error("Invalid paramter section: " + key + ". Section names are query and body");
 			}
+			try {
+				self.validateParamSection(key, params[key]);
+			} catch(e) {
+				throw new Error([
+					e,
+					"Error validating params:"
+				].join("\n"));
+			}
+		} );
+	},
 
-			// property is not a string
-			if ( typeof type !== "string" || typeof place !== "string" || typeof name !== "string" ) {
-				throw new Error("all param spec properties should have string values.");
-			}
+	validateParamSection: function(place, conf) {
+		var self = this;
+
+		if ( !conf ) {
+			return;
+		}
+
+		Object.keys(conf).forEach( function(key) {
+			self.validateName(key);
+
+			var type = conf[key];
 
 			// unknown type
 			if ( type !== "string" && type !== "number" ) {
@@ -105,9 +124,8 @@ var SpecValidator = {
 			if ( place !== "query" && place !== "body" ) {
 				throw new Error("unknown place to send parameter in is specified in the spec.");
 			}
-		}
+		} );
 	}
-
 };
 
 module.exports = SpecValidator;
