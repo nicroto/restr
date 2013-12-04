@@ -113,6 +113,12 @@ ClientGenerator.prototype = {
 						argName: "name"
 					}*/
 				],
+				arrayValidations: [
+					/*{
+						argName: "tags",
+						arrayType: "string"
+					}*/
+				],
 				urlKeys: [
 					/*"id"*/
 				],
@@ -130,10 +136,17 @@ ClientGenerator.prototype = {
 
 		for ( var i = 0; i < params.length; i++ ) {
 			var param = params[i];
-			methodModel.validations.push( {
-				validatorType: "validate" + param.type[0].toUpperCase() + param.type.slice(1) + "Argument",
-				argName: param.name
-			} );
+			if ( param.type === "array" ) {
+				methodModel.arrayValidations.push( {
+					argName: param.name,
+					arrayType: param.arrayType
+				} );
+			} else {
+				methodModel.validations.push( {
+					validatorType: "validate" + param.type[0].toUpperCase() + param.type.slice(1) + "Argument",
+					argName: param.name
+				} );
+			}
 			switch (param.place) {
 				case "query":
 					methodModel.queryArgs.push( param.name );

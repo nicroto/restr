@@ -20,6 +20,11 @@ var badTypeParams1 = {
 		query: {
 			" name": "string"
 		}
+	},
+	badArrayParam = {
+		query: {
+			tags: []
+		}
 	};
 
 var goodServiceSpec = {
@@ -30,10 +35,12 @@ var goodServiceSpec = {
 			name: "updateUser",
 			params: {
 				query: {
-					name: "string"
+					name: "string",
+					skills: ["string"]
 				},
 				body: {
-					description: "string"
+					description: "string",
+					prizes: ["number"]
 				}
 			},
 			verb: "put",
@@ -200,6 +207,12 @@ describe("RestrSpecValidator", function() {
 		it("should throw error if a prop is missing (type, place or name`)", function() {
 			assert.throws( function() {
 				validator.validateParams(badNameParams);
+			}, Error );
+		});
+
+		it("should throw error if a prop is an array without type specified", function() {
+			assert.throws( function() {
+				validator.validateParams(badArrayParam);
 			}, Error );
 		});
 

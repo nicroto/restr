@@ -25,15 +25,30 @@ var ParamParser = {
 	},
 
 	parseSection: function(place, conf) {
-		var result = [];
+		var self = this,
+			result = [];
+
 		Object.keys(conf).forEach(function(name) {
-			var type = conf[name];
-			result.push( {
-				type: type,
-				place: place,
-				name: name
-			} );
+			var param = conf[name];
+			var parsedParam = self.parseParam(param);
+
+			parsedParam.place = place;
+			parsedParam.name = name;
+
+			result.push( parsedParam );
 		});
+		return result;
+	},
+
+	parseParam: function(param) {
+		var result = {};
+		if ( param instanceof Array ) {
+			var arrayType = param[0];
+			result.type = "array";
+			result.arrayType = arrayType;
+		} else {
+			result.type = param;
+		}
 		return result;
 	}
 

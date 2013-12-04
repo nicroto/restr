@@ -1,0 +1,29 @@
+var	specs = [
+	{
+		name: "userService",
+		methods: [
+			{
+				route: "/api/user/:id/:otherId?",
+				name: "updateUser",
+				params: {
+					query: {
+						name: "string",
+						skills: ["string"]
+					},
+					body: {
+						description: "string",
+						prizes: ["number"]
+					}
+				},
+				verb: "put",
+				logic: function(req, res, id) {
+					if ( req && res && id ) {}
+
+					return true;
+				}
+			}
+		]
+	}
+];
+
+module.exports = specs;

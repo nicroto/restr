@@ -28,6 +28,13 @@ describe("ClientGenerator", function() {
 			assert.equal(result, expectedRendering);
 		});
 
+		it("should render services with methods with array params", function() {
+			var specs = require("./test-cases/4-client-rendering.data");
+			var expectedRendering = fs.readFileSync(__dirname + "/test-cases/4-client-rendering.result").toString();
+			var result = generator.render(specs);
+			assert.equal(result, expectedRendering);
+		});
+
 	});
 
 });

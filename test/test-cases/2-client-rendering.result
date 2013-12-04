@@ -14,6 +14,22 @@ var utils = {
 		}
 	},
 
+	validateArrayArgument: function(array, type) {
+		if ( !array || !(array instanceof Array) ) {
+			throw new Error("passed argument isn't array (or no passed argument).");
+		}
+
+		if ( !type || typeof(type) !== "string" ) {
+			throw new Error("no valid type passed.");
+		}
+
+		for ( var i = 0; i < array.length; i++ ) {
+			if ( typeof(array[i]) !== type ) {
+				throw new Error("array has an argument which is not of type: " + type + ".");
+			}
+		}
+	},
+
 	combinePaths: function() {
 		if ( arguments.length === 0 ) {
 			throw new Error("no arguments passed!");

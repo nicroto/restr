@@ -96,6 +96,33 @@ describe("RestrParamParser", function() {
 			);
 		});
 
+		it("parses array params", function() {
+			assert.deepEqual(
+				parser.parseParams({
+					query: {
+						skills: ["string"]
+					},
+					body: {
+						prizes: ["number"]
+					}
+				}),
+				[
+					{
+						type: "array",
+						arrayType: "string",
+						place: "query",
+						name: "skills"
+					},
+					{
+						type: "array",
+						arrayType: "number",
+						place: "body",
+						name: "prizes"
+					}
+				]
+			);
+		});
+
 	});
 
 });

@@ -64,7 +64,6 @@ var utils = {
 function ServerAPI(conf) {
 	var self = this;
 	self.userService.parent = self;
-	self.dataService.parent = self;
 
 	self.root = conf.root ? conf.root : "";
 	self.makeRequest = conf.makeRequest;
@@ -84,6 +83,8 @@ ServerAPI.prototype = {
 
 			utils.validateStringArgument(args.name);
 			utils.validateStringArgument(args.description);
+			utils.validateArrayArgument(args.skills, "string");
+			utils.validateArrayArgument(args.prizes, "number");
 
 			var route = utils.combinePaths(
 					self.parent.root,
@@ -96,82 +97,9 @@ ServerAPI.prototype = {
 				verb = "put";
 
 			queryArgs.name = args.name;
+			queryArgs.skills = args.skills;
 			bodyArgs.description = args.description;
-
-			self.parent.makeRequest(
-				verb,
-				route,
-				queryArgs,
-				bodyArgs,
-				callback
-			);
-		},
-
-		getUser: function(args, callback) {
-			var self = this;
-
-			var route = utils.combinePaths(
-					self.parent.root,
-					"/api/user/:id"
-						.replace(":id", args.id)
-				),
-				queryArgs = {},
-				bodyArgs = {},
-				verb = "get";
-
-			self.parent.makeRequest(
-				verb,
-				route,
-				queryArgs,
-				bodyArgs,
-				callback
-			);
-		}
-
-	},
-
-	dataService: {
-
-		parent: null,
-
-		updateData: function(args, callback) {
-			var self = this;
-
-			utils.validateStringArgument(args.itemName);
-			utils.validateNumberArgument(args.quantity);
-
-			var route = utils.combinePaths(
-					self.parent.root,
-					"/api/data/:id"
-						.replace(":id", args.id)
-				),
-				queryArgs = {},
-				bodyArgs = {},
-				verb = "put";
-
-			bodyArgs.itemName = args.itemName;
-			bodyArgs.quantity = args.quantity;
-
-			self.parent.makeRequest(
-				verb,
-				route,
-				queryArgs,
-				bodyArgs,
-				callback
-			);
-		},
-
-		deleteData: function(args, callback) {
-			var self = this;
-
-			var route = utils.combinePaths(
-					self.parent.root,
-					"/api/data/:id"
-						.replace(":id", args.id)
-				),
-				queryArgs = {},
-				bodyArgs = {},
-				verb = "delete";
+			bodyArgs.prizes = args.prizes;
 
 			self.parent.makeRequest(
 				verb,

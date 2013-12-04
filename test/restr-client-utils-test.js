@@ -59,6 +59,40 @@ describe("utils", function() {
 
 	});
 
+	describe("validateArrayArgument", function() {
+
+		it("should throw error if there is a wrong type element of the array", function() {
+			assert.throws( function() {
+				utils.validateArrayArgument();
+			}, Error, "no argument" );
+			assert.throws( function() {
+				utils.validateArrayArgument([]);
+			}, Error, "no type specified" );
+			assert.throws( function() {
+				utils.validateArrayArgument([], 1);
+			}, Error, "bad type argument" );
+			assert.throws( function() {
+				utils.validateArrayArgument("", "string");
+			}, Error, "bad array argument" );
+			assert.throws( function() {
+				utils.validateArrayArgument(["asda",1231], "string");
+			}, Error, "invalid array containing multiple types" );
+		});
+
+		it("it shouldn't throw error if correct arguments passed", function() {
+			assert.doesNotThrow( function() {
+				utils.validateArrayArgument([], "string");
+			}, Error, "empty array is a valid array, no matter the type" );
+			assert.doesNotThrow( function() {
+				utils.validateArrayArgument(["aasd","asdasddd"], "string");
+			}, Error, "string array" );
+			assert.doesNotThrow( function() {
+				utils.validateArrayArgument([123,12312,3123,123,123], "number");
+			}, Error, "number array" );
+		});
+
+	});
+
 	describe("combinePaths", function() {
 
 		it("should throw error if no paths passed", function() {

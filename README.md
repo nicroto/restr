@@ -62,10 +62,12 @@ var spec = {
 			name: "updateUser",
 			params: {
 				query: {
-					name: "string"
+					name: "string",
+					skills: ["string"]
 				},
 				body: {
-					description: "string"
+					description: "string",
+					prizes: ["number"]
 				}
 			},
 			verb: "put",
@@ -174,11 +176,6 @@ var utils = {
 		}
 	},
 
-	validateNumberArgument: function(arg) {
-		if ( typeof(arg) !== "number" ) {
-			throw new Error("argument is not a number.");
-		}
-	},
 	...
 };
 
@@ -225,6 +222,8 @@ ServerAPI.prototype = {
 
 			utils.validateStringArgument(args.name);
 			utils.validateStringArgument(args.description);
+			utils.validateArrayArgument(args.skills, "string");
+			utils.validateArrayArgument(args.prizes, "number");
 
 			var route = utils.combinePaths(
 					self.parent.root,
@@ -237,7 +236,9 @@ ServerAPI.prototype = {
 				verb = "put";
 
 			queryArgs.name = args.name;
+			queryArgs.skills = args.skills;
 			bodyArgs.description = args.description;
+			bodyArgs.prizes = args.prizes;
 
 			self.parent.makeRequest(
 				verb,
