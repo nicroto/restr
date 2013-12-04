@@ -343,9 +343,15 @@ define( ["superagent", "rest-api-client"], function(request, ServerAPI) {
 
 ## Not yet implemented
  - Restr Spec parameters:
-	- Array
 	- Object
  - Server parameter validation
+ - Auto access testing on localhost
+	- through CLI: restr --tracerttest 3000 ./rest/user-servcice-spec.js
+	- the above will get a server running on localhost:3000 and will try accessing every method from generated client lib.
+ - Auto production load testing
+	- through CLI: restr --loadtest http://roottoapi.com/api ./rest/user-servcice-spec.js 200 20
+	- the above will spawn 200 clients making 20 requests per min
+	- there can probably be some hooks that will be created by the restr loader, so the CLI could get internal server stats.
  - Request batching
  - Server Lambda's (client sends JavaScript to be executed on the server)
  - **I'm open for (reasonable) suggestions**
