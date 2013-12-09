@@ -119,6 +119,14 @@ ClientGenerator.prototype = {
 						arrayType: "string"
 					}*/
 				],
+				arrayClones: [
+					/*{
+						argName: "tags"
+					}*/
+				],
+				objects: [
+					/*"profile.collegues"*/
+				],
 				urlKeys: [
 					/*"id"*/
 				],
@@ -128,32 +136,60 @@ ClientGenerator.prototype = {
 				queryArgs: [
 					/*"name"*/
 				],
+				queryArrays: [
+					/*"ids"*/
+				],
 				bodyArgs: [
 					/*"description"*/
+				],
+				bodyArrays: [
+					/*"ids"*/
 				]
 			},
 			params = parser.parseParams(spec.params);
 
-		for ( var i = 0; i < params.length; i++ ) {
-			var param = params[i];
+		var extractModelParam = function(param, path) {
+			path = self._combineParamPaths( path, param.name );
 			if ( param.type === "array" ) {
+				var type = param.arrayType;
+				if ( typeof(type) === "object" ) {
+					type = "object";
+				}
 				methodModel.arrayValidations.push( {
-					argName: param.name,
-					arrayType: param.arrayType
+					argName: path,
+					arrayType: type
 				} );
+			} else if ( param.type === "object" ) {
+				if ( path === param.name ) {
+					methodModel.objects.push( path );
+				}
+				var innerParams = param.params;
+				for ( var i = 0; i < innerParams.length; i++ ) {
+					extractModelParam( innerParams[i], path );
+				}
 			} else {
 				methodModel.validations.push( {
 					validatorType: "validate" + param.type[0].toUpperCase() + param.type.slice(1) + "Argument",
-					argName: param.name
+					argName: path
 				} );
 			}
-			switch (param.place) {
-				case "query":
-					methodModel.queryArgs.push( param.name );
-					break;
-				case "body":
-					methodModel.bodyArgs.push( param.name );
-					break;
+		};
+
+		for ( var i = 0; i < params.length; i++ ) {
+			var param = params[i];
+			extractModelParam(param);
+			if ( param.type !== "object" ) {
+				var place;
+				switch (param.place) {
+					case "query":
+						place = (param.type === "array") ? "queryArrays" : "queryArgs";
+						methodModel[place].push( param.name );
+						break;
+					case "body":
+						place = (param.type === "array") ? "bodyArrays" : "bodyArgs";
+						methodModel[place].push( param.name );
+						break;
+				}
 			}
 		}
 
@@ -175,6 +211,14 @@ ClientGenerator.prototype = {
 		}
 
 		return self.methodTemplate(methodModel);
+	},
+
+	_combineParamPaths: function(basePath, endPath) {
+		if ( !basePath ) {
+			return endPath;
+		} else {
+			return basePath + "." + endPath;
+		}
 	}
 
 };

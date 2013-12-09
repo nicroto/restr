@@ -93,6 +93,47 @@ describe("utils", function() {
 
 	});
 
+	describe("validateObjectArgument", function() {
+
+		it("should throw error if wrong type of argument is passed", function() {
+			assert.throws( function() {
+				utils.validateObjectArgument();
+			}, Error, "no argument" );
+			assert.throws( function() {
+				utils.validateObjectArgument("string ");
+			}, Error, "string" );
+			assert.throws( function() {
+				utils.validateObjectArgument(1234421);
+			}, Error, "number" );
+			assert.throws( function() {
+				utils.validateObjectArgument(function() {});
+			}, Error, "function" );
+		});
+
+		it("should throw error on circular reference", function() {
+			assert.throws( function() {
+				var a = {},
+					b = { a: a };
+
+				a.b = b;
+
+				utils.validateObjectArgument(a);
+			}, Error );
+		});
+
+		it("it shouldn't throw error if correct argument is passed", function() {
+			assert.doesNotThrow( function() {
+				utils.validateObjectArgument({});
+			}, Error, "empty object" );
+			assert.doesNotThrow( function() {
+				utils.validateObjectArgument({
+					name: "Nikolay Tsenkov"
+				});
+			}, Error, "string array" );
+		});
+
+	});
+
 	describe("combinePaths", function() {
 
 		it("should throw error if no paths passed", function() {
@@ -126,6 +167,31 @@ describe("utils", function() {
 			assert.equal(
 				utils.combinePaths("one/", "/two/", "/three"),
 				"one/two/three"
+			);
+		});
+
+	});
+
+	describe("cloneObject", function() {
+
+		it("should clone objects having all supported types (including inner object)", function() {
+			assert.deepEqual(
+				utils.cloneObject( {
+					fullName: "Nikolay Tsenkov",
+					picUrls: ["http://sphotos-e.ak.fbcdn.net/hphotos-ak-ash2/306865_4399867203696_922117823_n.jpg"],
+					collegues: {
+						employeeIds: [123123333,1231245323,11223423],
+						bossIds: []
+					}
+				} ),
+				{
+					fullName: "Nikolay Tsenkov",
+					picUrls: ["http://sphotos-e.ak.fbcdn.net/hphotos-ak-ash2/306865_4399867203696_922117823_n.jpg"],
+					collegues: {
+						employeeIds: [123123333,1231245323,11223423],
+						bossIds: []
+					}
+				}
 			);
 		});
 

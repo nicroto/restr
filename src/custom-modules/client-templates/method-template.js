@@ -1,10 +1,12 @@
 		{{name}}: function(args, callback) {
-			var self = this;
+			var self = this;{{#if objects}}
+{{#each objects}}
+			utils.validateObjectArgument(args.{{this}});{{/each}}{{/if}}{{#if validations}}
 {{#each validations}}
-			utils.{{#with this}}{{validatorType}}(args.{{argName}}{{/with}});{{/each}}{{#if arrayValidations}}{{#each arrayValidations}}
-			utils.validateArrayArgument({{#with this}}args.{{argName}}, "{{arrayType}}"{{/with}});{{/each}}
-{{/if}}{{#if validations}}{{#unless arrayValidations}}
-{{/unless}}{{/if}}
+			utils.{{#with this}}{{validatorType}}(args.{{argName}}{{/with}});{{/each}}{{/if}}{{#if arrayValidations}}
+{{#each arrayValidations}}
+			utils.validateArrayArgument({{#with this}}args.{{argName}}, "{{arrayType}}"{{/with}});{{/each}}{{/if}}
+
 			var route = utils.combinePaths(
 					self.parent.root,
 					"{{route}}"{{#each urlKeys}}
@@ -13,12 +15,18 @@
 				),
 				queryArgs = {},
 				bodyArgs = {},
-				verb = "{{verb}}";
+				verb = "{{verb}}";{{#if queryArgs}}
 {{#each queryArgs}}
-			queryArgs.{{this}} = args.{{this}};{{/each}}{{#if bodyArgs}}{{#each bodyArgs}}
-			bodyArgs.{{this}} = args.{{this}};{{/each}}
-{{/if}}{{#if queryArgs}}{{#unless bodyArgs}}
-{{/unless}}{{/if}}
+			queryArgs.{{this}} = args.{{this}};{{/each}}{{/if}}{{#if bodyArgs}}
+{{#each bodyArgs}}
+			bodyArgs.{{this}} = args.{{this}};{{/each}}{{/if}}{{#if queryArrays}}
+{{#each queryArrays}}
+			queryArgs.{{this}} = utils.cloneArray(args.{{this}});{{/each}}{{/if}}{{#if bodyArrays}}
+{{#each bodyArrays}}
+			bodyArgs.{{this}} = utils.cloneArray(args.{{this}});{{/each}}{{/if}}{{#if objects}}
+{{#each objects}}
+			bodyArgs.{{this}} = utils.cloneObject(args.{{this}});{{/each}}{{/if}}
+
 			self.parent.makeRequest(
 				verb,
 				route,

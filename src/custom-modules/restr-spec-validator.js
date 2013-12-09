@@ -1,5 +1,7 @@
 'use strict';
 
+var utils = require("./restr-client-utils");
+
 var SpecValidator = {
 
 	validateServiceSpec: function(spec) {
@@ -132,17 +134,29 @@ var SpecValidator = {
 		var self = this;
 		// unknown type
 		if ( param !== "string" && param !== "number" ) {
-			if ( !(param instanceof Array) ) {
+			if ( param instanceof Array ) {
+				if ( !param[0] ) {
+					throw new Error("array param without a type specified.");
+				}
+				if ( param[0] instanceof Array ) {
+					throw new Error("nested arrays are not supported.");
+				}
+				self.validateParam(param[0]);
+			} else if ( typeof(param) === "object" ) {
+				utils.validateObjectArgument(param);
+				self.validateObjectParam(param);
+			} else if ( typeof(param) !== "object" ) {
 				throw new Error("unknown param type is specified in the spec.");
 			}
-			if ( !param[0] ) {
-				throw new Error("array param without a type specified.");
-			}
-			if ( param[0] instanceof Array ) {
-				throw new Error("nested arrays are not supported.");
-			}
-			self.validateParam(param[0]);
 		}
+	},
+
+	validateObjectParam: function(object) {
+		var self = this;
+		Object.keys(object).forEach( function(key) {
+			var prop = object[key];
+			self.validateParam(prop);
+		} );
 	}
 
 };

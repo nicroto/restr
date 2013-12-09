@@ -40,7 +40,15 @@ var goodServiceSpec = {
 				},
 				body: {
 					description: "string",
-					prizes: ["number"]
+					prizes: ["number"],
+					profile: {
+						fullName: "string",
+						picUrls: ["string"],
+						collegues: {
+							employeeIds: ["number"],
+							bossIds: ["number"]
+						}
+					}
 				}
 			},
 			verb: "put",
@@ -214,6 +222,35 @@ describe("RestrSpecValidator", function() {
 			assert.throws( function() {
 				validator.validateParams(badArrayParam);
 			}, Error );
+		});
+
+	});
+
+	describe("validateParam", function() {
+
+		it("shouldn't throw error on valid array param", function() {
+			assert.doesNotThrow( function() {
+				validator.validateParam([{}]);
+			}, Error, "arrayType is an empty object" );
+			assert.doesNotThrow( function() {
+				validator.validateParam([{
+					tags: [{
+						id: "number",
+						name: "string"
+					}]
+				}]);
+			}, Error, "arrayType is an empty object" );
+		});
+
+		it("shouldn't throw error on valid object param", function() {
+			assert.doesNotThrow( function() {
+				validator.validateParam({});
+			}, Error, "on empty object" );
+			assert.doesNotThrow( function() {
+				validator.validateParam({
+					innerObject: {}
+				});
+			}, Error, "on nested objects" );
 		});
 
 	});

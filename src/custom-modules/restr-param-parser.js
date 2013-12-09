@@ -41,15 +41,42 @@ var ParamParser = {
 	},
 
 	parseParam: function(param) {
-		var result = {};
+		var self = this;
+		var result;
 		if ( param instanceof Array ) {
-			var arrayType = param[0];
-			result.type = "array";
-			result.arrayType = arrayType;
+			var type = param[0];
+			if ( typeof(type) === "object" ) {
+				type = self.parseObject(type);
+			}
+			result = {
+				type: "array",
+				arrayType: type
+			};
+		} else if ( typeof(param) === "object" ) {
+			result = self.parseObject(param);
 		} else {
-			result.type = param;
+			result = {
+				type: param
+			};
 		}
 		return result;
+	},
+
+	parseObject: function(source) {
+		var self = this;
+		var parsedObject = {
+			type: "object",
+			params: []
+		};
+
+		Object.keys(source).forEach( function(key) {
+			var prop = source[key];
+			var param = self.parseParam(prop);
+			param.name = key;
+			parsedObject.params.push( param );
+		} );
+
+		return parsedObject;
 	}
 
 };

@@ -123,6 +123,129 @@ describe("RestrParamParser", function() {
 			);
 		});
 
+		it("parses array params if arrayType is object", function() {
+			assert.deepEqual(
+				parser.parseParams({
+					body: {
+						items: [{
+							name: "string",
+							tags: [{
+								id: "number",
+								name: "string"
+							}]
+						}]
+					}
+				}),
+				[
+					{
+						type: "array",
+						arrayType: {
+							type: "object",
+							params: [
+								{
+									type: "string",
+									name: "name"
+								},
+								{
+									type: "array",
+									arrayType: {
+										type: "object",
+										params: [
+											{
+												type: "number",
+												name: "id"
+											},
+											{
+												type: "string",
+												name: "name"
+											}
+										]
+									},
+									name: "tags"
+								}
+							]
+						},
+						place: "body",
+						name: "items"
+					}
+				]
+			);
+		});
+
+		it("parses object params", function() {
+			assert.deepEqual(
+				parser.parseParams({
+					body: {
+						profile: {
+							fullName: "string",
+							picUrls: ["string"],
+							collegues: {
+								employeeIds: ["number"],
+								bossIds: ["number"]
+							},
+							tags:[
+								{
+									id: "number",
+									name: "string"
+								}
+							]
+						}
+					}
+				}),
+				[
+					{
+						type: "object",
+						params: [
+							{
+								type: "string",
+								name: "fullName"
+							},
+							{
+								type: "array",
+								arrayType: "string",
+								name: "picUrls"
+							},
+							{
+								type: "object",
+								params: [
+									{
+										type: "array",
+										arrayType: "number",
+										name: "employeeIds"
+									},
+									{
+										type: "array",
+										arrayType: "number",
+										name: "bossIds"
+									}
+								],
+								name: "collegues"
+							},
+							{
+								type: "array",
+								arrayType: {
+									type: "object",
+									params: [
+										{
+											type: "number",
+											name: "id"
+										},
+										{
+											type: "string",
+											name: "name"
+										}
+									]
+								},
+								name: "tags"
+							},
+						],
+						place: "body",
+						name: "profile"
+					}
+				]
+			);
+		});
+
 	});
 
 });

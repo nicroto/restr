@@ -7,9 +7,9 @@ It's a combination of:
  - [node module](#running-all-specs-on-the-server) for loading the specs of your API on the server (using ExpressJS by default, but configurable to alternatives);
  - a CLI tooling for [API spec validation](#validating-written-specs) and **[auto-generation of a client JavaScript lib](#generating-the-client-lib) for accessing your server API**.
 
-Restr requires your REST API to be written in accordance to the Restr Spec. Still in its infancy, this specification aims at adding as little overhead as possible, while enabling features, such as the auto-generation of client lib for accessing your server API and validation of transferred data.
+Restr requires your REST API to be written in accordance to the Restr Spec. This specification aims at adding as little overhead as possible, while enabling features, such as the auto-generation of client lib for accessing your server API and validation of transferred data.
 
-Having all services written using the Restr Spec, you can use the CLI tool restr to **validate** these specs and **generate the client-side JavaScript code**, which usually is done manually as you add, change or remove methods and whole service to/in/from the server API. The generated lib validates all passed data in accordance with the spec it was generated from.
+Having all services written using the Restr Spec, you can use the CLI tool restr to **validate** these specs and **generate the client-side JavaScript code**, which usually is written manually as you add, change or remove methods and whole service to/in/from the server API. The generated lib **validates all passed data** in accordance with the **spec** it was generated from.
 
 This simplifies significantly your workflow to **working on the server API** -> **regenerate the client code** -> **repeat**.
 
@@ -62,12 +62,21 @@ var spec = {
 			name: "updateUser",
 			params: {
 				query: {
-					name: "string",
-					skills: ["string"]
+					name: "string"
 				},
 				body: {
-					description: "string",
-					prizes: ["number"]
+					profile: {
+						fullName: "string",
+						picUrls: ["string"],
+						collegues: {
+							employeeIds: ["number"],
+							bossIds: ["number"]
+						},
+						tags: [{
+							id: "number",
+							name: "string"
+						}]
+					}
 				}
 			},
 			verb: "put",
@@ -220,10 +229,15 @@ ServerAPI.prototype = {
 		updateUser: function(args, callback) {
 			var self = this;
 
+			utils.validateObjectArgument(args.profile);
+
 			utils.validateStringArgument(args.name);
-			utils.validateStringArgument(args.description);
-			utils.validateArrayArgument(args.skills, "string");
-			utils.validateArrayArgument(args.prizes, "number");
+			utils.validateStringArgument(args.profile.fullName);
+
+			utils.validateArrayArgument(args.profile.picUrls, "string");
+			utils.validateArrayArgument(args.profile.collegues.employeeIds, "number");
+			utils.validateArrayArgument(args.profile.collegues.bossIds, "number");
+			utils.validateArrayArgument(args.profile.tags, "object");
 
 			var route = utils.combinePaths(
 					self.parent.root,
@@ -236,9 +250,8 @@ ServerAPI.prototype = {
 				verb = "put";
 
 			queryArgs.name = args.name;
-			queryArgs.skills = args.skills;
-			bodyArgs.description = args.description;
-			bodyArgs.prizes = args.prizes;
+
+			bodyArgs.profile = utils.cloneObject(args.profile);
 
 			self.parent.makeRequest(
 				verb,
@@ -343,8 +356,11 @@ define( ["superagent", "rest-api-client"], function(request, ServerAPI) {
 
 ## Not yet implemented
  - Restr Spec parameters:
-	- Object
- - Server parameter validation
+	- Same Object Structure trees (probably defining these on spec level with a name and then using this name as scalar type)
+ - Sample usage as comments on-top of every method in the generated client lib
+ - Validation
+ 	- Arrays having a custom object as arrayType (```[{...}]```) should be validated (currently only checking if items are objects)
+ 	- Server validation
  - Auto access testing on localhost
 	- through CLI: restr --tracerttest 3000 ./rest/user-servcice-spec.js
 	- the above will get a server running on localhost:3000 and will try accessing every method from generated client lib.

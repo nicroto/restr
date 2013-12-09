@@ -151,11 +151,15 @@ ServerAPI.prototype = {
 		updateUser: function(args, callback) {
 			var self = this;
 
-			utils.validateStringArgument(args.name);
-			utils.validateStringArgument(args.description);
+			utils.validateObjectArgument(args.profile);
 
-			utils.validateArrayArgument(args.skills, "string");
-			utils.validateArrayArgument(args.prizes, "number");
+			utils.validateStringArgument(args.name);
+			utils.validateStringArgument(args.profile.fullName);
+
+			utils.validateArrayArgument(args.profile.picUrls, "string");
+			utils.validateArrayArgument(args.profile.collegues.employeeIds, "number");
+			utils.validateArrayArgument(args.profile.collegues.bossIds, "number");
+			utils.validateArrayArgument(args.profile.tags, "object");
 
 			var route = utils.combinePaths(
 					self.parent.root,
@@ -169,11 +173,7 @@ ServerAPI.prototype = {
 
 			queryArgs.name = args.name;
 
-			bodyArgs.description = args.description;
-
-			queryArgs.skills = utils.cloneArray(args.skills);
-
-			bodyArgs.prizes = utils.cloneArray(args.prizes);
+			bodyArgs.profile = utils.cloneObject(args.profile);
 
 			self.parent.makeRequest(
 				verb,
