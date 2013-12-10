@@ -292,7 +292,7 @@ You can use the generated script in 3 different ways:
 		makeRequest: function(verb, route, queryArgs, bodyArgs, callback) {
 			// using superagent
 			request
-				.[verb](route)
+				[verb](route)
 				.send(bodyArgs)
 				.query(queryArgs)
 				.end(function(res){
@@ -317,7 +317,7 @@ var server = new ServerAPI( {
 	root: "http://example.com/", /* Server's address */
 	makeRequest: function(verb, route, queryArgs, bodyArgs, callback) {
 		request
-			.[verb](route)
+			[verb](route)
 			.send(bodyArgs)
 			.query(queryArgs)
 			.end(function(res){
@@ -343,7 +343,7 @@ define( ["superagent", "rest-api-client"], function(request, ServerAPI) {
 		root: "http://example.com/", /* Server's address */
 		makeRequest: function(verb, route, queryArgs, bodyArgs, callback) {
 			request
-				.[verb](route)
+				[verb](route)
 				.send(bodyArgs)
 				.query(queryArgs)
 				.end(function(res){
