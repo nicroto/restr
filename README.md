@@ -116,10 +116,14 @@ var express = require("express"),
 	app = express(),
 	loader = new RestrLoader(app);
 
+app.use(express.bodyParser());
+
 loader.loadServices( [
 	require("./rest/user-service-spec"),
 	require("./rest/data-service-spec")
 ] );
+
+app.listen(process.env.PORT || 3000);
 ```
 
 In case you would like to use alternative routing mechanism (to ExpressJS), you can do so like this:
@@ -356,6 +360,7 @@ define( ["superagent", "rest-api-client"], function(request, ServerAPI) {
 
 ## Not yet implemented
  - Restr Spec parameters:
+ 	- Boolean
 	- Same Object Structure trees (probably defining these on spec level with a name and then using this name as scalar type)
  - Sample usage as comments on-top of every method in the generated client lib
  - Validation
