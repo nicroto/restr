@@ -361,6 +361,8 @@ define( ["superagent", "rest-api-client"], function(request, ServerAPI) {
 ## Not yet implemented
  - Restr Spec parameters:
  	- Boolean
+ 	- Optional Params (in the body and query, not only in the url)
+ 	- Return Params
 	- Same Object Structure trees (probably defining these on spec level with a name and then using this name as scalar type)
  - Sample usage as comments on-top of every method in the generated client lib
  - Validation
