@@ -75,7 +75,8 @@ var spec = {
 						tags: [{
 							id: "number",
 							name: "string"
-						}]
+						}],
+						verified: "bool"
 					}
 				}
 			},
@@ -237,6 +238,7 @@ ServerAPI.prototype = {
 
 			utils.validateStringArgument(args.name);
 			utils.validateStringArgument(args.profile.fullName);
+			utils.validateBoolArgument(args.profile.verified);
 
 			utils.validateArrayArgument(args.profile.picUrls, "string");
 			utils.validateArrayArgument(args.profile.collegues.employeeIds, "number");
@@ -360,7 +362,6 @@ define( ["superagent", "rest-api-client"], function(request, ServerAPI) {
 
 ## Not yet implemented
  - Restr Spec parameters:
- 	- Boolean
  	- Optional Params (in the body and query, not only in the url)
  	- Return Params
 	- Same Object Structure trees (probably defining these on spec level with a name and then using this name as scalar type)
