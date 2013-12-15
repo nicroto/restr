@@ -14,6 +14,12 @@ var utils = {
 		}
 	},
 
+	validateBoolArgument: function(arg) {
+		if ( arg !== true && arg !== false ) {
+			throw new Error("argument is not a boolean.");
+		}
+	},
+
 	validateArrayArgument: function(array, type) {
 		if ( !array || !(array instanceof Array) ) {
 			throw new Error("passed argument isn't array (or no passed argument).");
@@ -152,7 +158,9 @@ ServerAPI.prototype = {
 			var self = this;
 
 			utils.validateStringArgument(args.name);
+			utils.validateBoolArgument(args.verified);
 			utils.validateStringArgument(args.description);
+			utils.validateBoolArgument(args.authorized);
 
 			var route = utils.combinePaths(
 					self.parent.root,
@@ -165,8 +173,10 @@ ServerAPI.prototype = {
 				verb = "put";
 
 			queryArgs.name = args.name;
+			queryArgs.verified = args.verified;
 
 			bodyArgs.description = args.description;
+			bodyArgs.authorized = args.authorized;
 
 			self.parent.makeRequest(
 				verb,

@@ -14,6 +14,12 @@ var utils = {
 		}
 	},
 
+	validateBoolArgument: function(arg) {
+		if ( arg !== true && arg !== false ) {
+			throw new Error("argument is not a boolean.");
+		}
+	},
+
 	validateArrayArgument: function(array, type) {
 		if ( !array || !(array instanceof Array) ) {
 			throw new Error("passed argument isn't array (or no passed argument).");

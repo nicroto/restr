@@ -242,15 +242,10 @@ describe("RestrSpecValidator", function() {
 			}, Error, "arrayType is an empty object" );
 		});
 
-		it("shouldn't throw error on valid object param", function() {
+		it("shouldn't throw error on bool param", function() {
 			assert.doesNotThrow( function() {
-				validator.validateParam({});
-			}, Error, "on empty object" );
-			assert.doesNotThrow( function() {
-				validator.validateParam({
-					innerObject: {}
-				});
-			}, Error, "on nested objects" );
+				validator.validateParam("bool");
+			}, Error );
 		});
 
 	});

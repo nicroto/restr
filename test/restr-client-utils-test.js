@@ -59,6 +59,31 @@ describe("utils", function() {
 
 	});
 
+	describe("validateBoolArgument", function() {
+
+		it("should throw error if argument is not a boolean", function() {
+			assert.throws( function() {
+				utils.validateBoolArgument();
+			}, Error, "no argument" );
+			assert.throws( function() {
+				utils.validateBoolArgument("true");
+			}, Error, "string argument" );
+			assert.throws( function() {
+				utils.validateBoolArgument(1);
+			}, Error, "number argument" );
+		});
+
+		it("it shouldn't throw error if argument is boolean", function() {
+			assert.doesNotThrow( function() {
+				utils.validateBoolArgument(true);
+			}, Error );
+			assert.doesNotThrow( function() {
+				utils.validateBoolArgument(false);
+			}, Error );
+		});
+
+	});
+
 	describe("validateArrayArgument", function() {
 
 		it("should throw error if there is a wrong type element of the array", function() {

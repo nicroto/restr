@@ -133,7 +133,7 @@ var SpecValidator = {
 	validateParam: function(param) {
 		var self = this;
 		// unknown type
-		if ( param !== "string" && param !== "number" ) {
+		if ( param !== "string" && param !== "number" && param !== "bool" ) {
 			if ( param instanceof Array ) {
 				if ( !param[0] ) {
 					throw new Error("array param without a type specified.");

@@ -7,10 +7,12 @@ var	specs = [
 				name: "updateUser",
 				params: {
 					query: {
-						name: "string"
+						name: "string",
+						verified: "bool"
 					},
 					body: {
-						description: "string"
+						description: "string",
+						authorized: "bool"
 					}
 				},
 				verb: "put",

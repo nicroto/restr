@@ -75,10 +75,12 @@ describe("RestrParamParser", function() {
 			assert.deepEqual(
 				parser.parseParams({
 					query: {
-						name: "string"
+						name: "string",
+						verified: "bool"
 					},
 					body: {
-						quantity: "number"
+						quantity: "number",
+						authorized: "bool"
 					}
 				}),
 				[
@@ -88,9 +90,19 @@ describe("RestrParamParser", function() {
 						name: "name"
 					},
 					{
+						type: "bool",
+						place: "query",
+						name: "verified"
+					},
+					{
 						type: "number",
 						place: "body",
 						name: "quantity"
+					},
+					{
+						type: "bool",
+						place: "body",
+						name: "authorized"
 					}
 				]
 			);
