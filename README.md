@@ -109,17 +109,17 @@ var spec = {
 			params: {
 				query: {
 					shortName: "string",
-					**"initials?"**: "string",
-					**"tags?"**: [{
+					"initials?": "string",
+					"tags?": [{
 						id: "number",
 						text: "string"
 					}]
 				},
 				body: {
-					**"profile?"**: {
+					"profile?": {
 						fullName: "string",
-						**"collegues?"**: {
-							**"employeeIds?"**: ["number"],
+						"collegues?": {
+							"employeeIds?": ["number"],
 							bossIds: ["number"]
 						},
 					}
