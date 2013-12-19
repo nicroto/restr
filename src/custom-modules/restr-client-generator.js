@@ -107,6 +107,65 @@ ClientGenerator.prototype = {
 				name: spec.name,
 				verb: spec.verb,
 				route: spec.route,
+				optionalValidationFuncs:[
+					/*{
+						funcName: "optionalValidation1",
+						optionalObjectValidations:[
+							{
+								argName: "profile",
+								funcName: "optionalValidation1"
+							}
+						],
+						optionalValidations:[
+							{
+								argName: "name",
+								validatorType: "string"
+							}
+						],
+						optionalArrayValidations:[
+							{
+								argName: "tags",
+								arrayType: "string"
+							}
+						],
+						objectValidations: [
+							"profile.collegues"
+						],
+						validations: [
+							{
+								validatorType: "validateStringArgument",
+								argName: "name"
+							}
+						],
+						arrayValidations: [
+							{
+								argName: "tags",
+								arrayType: "string"
+							}
+						]
+					}*/
+				],
+				optionalObjectValidations:[
+					/*{
+						argName: "profile",
+						funcName: "optionalValidation1"
+					}*/
+				],
+				optionalValidations:[
+					/*{
+						argName: "name",
+						validatorType: "string"
+					}*/
+				],
+				optionalArrayValidations:[
+					/*{
+						argName: "tags",
+						arrayType: "string"
+					}*/
+				],
+				objectValidations: [
+					/*"profile.collegues"*/
+				],
 				validations: [
 					/*{
 						validatorType: "validateStringArgument",
@@ -124,15 +183,13 @@ ClientGenerator.prototype = {
 						argName: "tags"
 					}*/
 				],
-				objects: [
-					/*"profile.collegues"*/
-				],
 				urlKeys: [
 					/*"id"*/
 				],
 				optionalUrlKeys: [
 					/*"otherId"*/
 				],
+				objects: [],
 				queryArgs: [
 					/*"name"*/
 				],
@@ -148,27 +205,50 @@ ClientGenerator.prototype = {
 			},
 			params = parser.parseParams(spec.params);
 
-		var extractModelParam = function(param, path) {
+		var extractModelParam = function(model, param, path) {
+			var validationsCollectionToAdd;
 			path = self._combineParamPaths( path, param.name );
 			if ( param.type === "array" ) {
 				var type = param.arrayType;
+				validationsCollectionToAdd = param.optional ? "optionalArrayValidations" : "arrayValidations";
 				if ( typeof(type) === "object" ) {
 					type = "object";
 				}
-				methodModel.arrayValidations.push( {
+				model [validationsCollectionToAdd] .push( {
 					argName: path,
 					arrayType: type
 				} );
 			} else if ( param.type === "object" ) {
+				// if on root level of params (all inner objects will be cloned when this 1 is)
 				if ( path === param.name ) {
 					methodModel.objects.push( path );
 				}
+				if ( param.optional ) {
+					var funcName = path.replace(/\./g,"_") + "_validation";
+					model.optionalObjectValidations.push( {
+						argName: path,
+						funcName: funcName
+					} );
+					model = {
+						funcName: funcName,
+						optionalObjectValidations:[],
+						optionalValidations:[],
+						optionalArrayValidations:[],
+						objectValidations: [],
+						validations: [],
+						arrayValidations: []
+					};
+					methodModel.optionalValidationFuncs.push( model );
+				} else {
+					model.objectValidations.push( path );
+				}
 				var innerParams = param.params;
 				for ( var i = 0; i < innerParams.length; i++ ) {
-					extractModelParam( innerParams[i], path );
+					extractModelParam( model, innerParams[i], path );
 				}
 			} else {
-				methodModel.validations.push( {
+				validationsCollectionToAdd = param.optional ? "optionalValidations" : "validations";
+				model [validationsCollectionToAdd] .push( {
 					validatorType: "validate" + param.type[0].toUpperCase() + param.type.slice(1) + "Argument",
 					argName: path
 				} );
@@ -177,7 +257,7 @@ ClientGenerator.prototype = {
 
 		for ( var i = 0; i < params.length; i++ ) {
 			var param = params[i];
-			extractModelParam(param);
+			extractModelParam(methodModel, param);
 			if ( param.type !== "object" ) {
 				var place;
 				switch (param.place) {

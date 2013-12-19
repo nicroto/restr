@@ -55,8 +55,8 @@ var SpecValidator = {
 	},
 
 	validateName: function(name) {
-		var match = name.match(/^([$a-z_A-Z]+[0-9]*)+$/);
-		if ( !(match.length && match.length > 0) ) {
+		var match = name.match(/^([$a-z_A-Z]+[0-9]*)+\??$/);
+		if ( !(match && match.length && match.length > 0) ) {
 			throw new Error("method.name should be a valid js function name.");
 		}
 	},
@@ -94,14 +94,7 @@ var SpecValidator = {
 			if ( key !== "query" && key !== "body" ) {
 				throw new Error("Invalid paramter section: " + key + ". Section names are query and body");
 			}
-			try {
-				self.validateParamSection(key, params[key]);
-			} catch(e) {
-				throw new Error([
-					e,
-					"Error validating params:"
-				].join("\n"));
-			}
+			self.validateParamSection(key, params[key]);
 		} );
 	},
 

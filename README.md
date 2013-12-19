@@ -62,7 +62,8 @@ var spec = {
 			name: "updateUser",
 			params: {
 				query: {
-					name: "string"
+					name: "string",
+					"initials?": "string"
 				},
 				body: {
 					profile: {
@@ -86,6 +87,45 @@ var spec = {
 
 				return true;
 			}
+		}
+	]
+};
+
+module.exports = spec;
+```
+
+### Note: on optional params
+
+They are specified by **?** at the end of the param name (surrounded by double-quotes in order to be a valid JavaScript).
+Here is an example demonstrating everything currently possible with optional params in the Restr Spec:
+
+```javascript
+var spec = {
+	name: "service",
+	methods: [
+		{
+			route: "/api/user/:id/:otherId?",
+			name: "updateUser",
+			params: {
+				query: {
+					shortName: "string",
+					**"initials?"**: "string",
+					**"tags?"**: [{
+						id: "number",
+						text: "string"
+					}]
+				},
+				body: {
+					**"profile?"**: {
+						fullName: "string",
+						**"collegues?"**: {
+							**"employeeIds?"**: ["number"],
+							bossIds: ["number"]
+						},
+					}
+				}
+			},
+			...
 		}
 	]
 };
@@ -362,9 +402,8 @@ define( ["superagent", "rest-api-client"], function(request, ServerAPI) {
 
 ## Not yet implemented
  - Restr Spec parameters:
- 	- Optional Params (in the body and query, not only in the url)
- 	- Return Params
 	- Same Object Structure trees (probably defining these on spec level with a name and then using this name as scalar type)
+	- Return Params
  - Sample usage as comments on-top of every method in the generated client lib
  - Validation
  	- Arrays having a custom object as arrayType (```[{...}]```) should be validated (currently only checking if items are objects)

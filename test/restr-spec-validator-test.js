@@ -224,6 +224,16 @@ describe("RestrSpecValidator", function() {
 			}, Error );
 		});
 
+		it("shouldn't throw error if a prop is optional", function() {
+			assert.doesNotThrow( function() {
+				validator.validateParams( {
+					query: {
+						"verified?": "bool"
+					}
+				} );
+			}, Error );
+		});
+
 	});
 
 	describe("validateParam", function() {

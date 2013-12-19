@@ -258,6 +258,64 @@ describe("RestrParamParser", function() {
 			);
 		});
 
+		it("parses optional params", function() {
+			assert.deepEqual(
+				parser.parseParams({
+					query: {
+						"verified?": "bool"
+					},
+					body: {
+						"authorized?": "bool",
+						"profile?": {
+							name: "string",
+							"collegues?": {
+								"employeeIds?": ["number"]
+							}
+						}
+					}
+				}),
+				[
+					{
+						type: "bool",
+						place: "query",
+						name: "verified",
+						optional: true
+					},
+					{
+						type: "bool",
+						place: "body",
+						name: "authorized",
+						optional: true
+					},
+					{
+						type: "object",
+						place: "body",
+						name: "profile",
+						optional: true,
+						params:[
+							{
+								type: "string",
+								name: "name"
+							},
+							{
+								type: "object",
+								name: "collegues",
+								optional: true,
+								params:[
+									{
+										type: "array",
+										arrayType: "number",
+										optional: true,
+										name: "employeeIds"
+									}
+								]
+							}			
+						]
+					}
+				]
+			);
+		});
+
 	});
 
 });

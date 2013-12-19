@@ -157,16 +157,38 @@ ServerAPI.prototype = {
 		updateUser: function(args, callback) {
 			var self = this;
 
-			utils.validateObjectArgument(args.profile);
-			utils.validateObjectArgument(args.profile.collegues);
+			var profile_validation = function() {
 
-			utils.validateStringArgument(args.name);
-			utils.validateStringArgument(args.profile.fullName);
+				if ( typeof args.profile.collegues !== "undefined" ) {
+					utils.validateObjectArgument(args.profile.collegues);
+					profile_collegues_validation();
+				}
 
-			utils.validateArrayArgument(args.profile.picUrls, "string");
-			utils.validateArrayArgument(args.profile.collegues.employeeIds, "number");
-			utils.validateArrayArgument(args.profile.collegues.bossIds, "number");
-			utils.validateArrayArgument(args.profile.tags, "object");
+				utils.validateStringArgument(args.profile.fullName);
+			};
+			var profile_collegues_validation = function() {
+
+				if ( typeof args.profile.collegues.employeeIds !== "undefined" ) {
+					utils.validateArrayArgument(args.profile.collegues.employeeIds, "number");
+				}
+
+				utils.validateArrayArgument(args.profile.collegues.bossIds, "number");
+			};
+
+			if ( typeof args.profile !== "undefined" ) {
+				utils.validateObjectArgument(args.profile);
+				profile_validation();
+			}
+
+			if ( typeof args.initials !== "undefined" ) {
+				utils.validateStringArgument(args.initials);
+			}
+
+			if ( typeof args.tags !== "undefined" ) {
+				utils.validateArrayArgument(args.tags, "object");
+			}
+
+			utils.validateStringArgument(args.shortName);
 
 			var route = utils.combinePaths(
 					self.parent.root,
@@ -178,7 +200,10 @@ ServerAPI.prototype = {
 				bodyArgs = {},
 				verb = "put";
 
-			queryArgs.name = args.name;
+			queryArgs.shortName = args.shortName;
+			queryArgs.initials = args.initials;
+
+			queryArgs.tags = utils.cloneArray(args.tags);
 
 			bodyArgs.profile = utils.cloneObject(args.profile);
 

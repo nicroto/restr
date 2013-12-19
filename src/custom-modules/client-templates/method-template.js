@@ -1,6 +1,39 @@
 		{{name}}: function(args, callback) {
-			var self = this;{{#if objects}}
-{{#each objects}}
+			var self = this;{{#if optionalValidationFuncs}}
+{{#each optionalValidationFuncs}}{{#with this}}
+			var {{funcName}} = function() {
+{{#if optionalObjectValidations}}{{#each optionalObjectValidations}}{{#with this}}
+				if ( typeof args.{{argName}} !== "undefined" ) {
+					utils.validateObjectArgument(args.{{argName}});
+					{{funcName}}();
+				}{{/with}}{{/each}}{{/if}}{{#if optionalValidations}}{{#each optionalValidations}}{{#with this}}
+				if ( typeof args.{{argName}} !== "undefined" ) {
+					utils.{{validatorType}}(args.{{argName}});
+				}{{/with}}{{/each}}{{/if}}{{#if optionalArrayValidations}}{{#each optionalArrayValidations}}{{#with this}}
+				if ( typeof args.{{argName}} !== "undefined" ) {
+					utils.validateArrayArgument(args.{{argName}}, "{{arrayType}}");
+				}{{/with}}{{/each}}{{/if}}{{#if objectValidations}}
+{{#each objectValidations}}
+				utils.validateObjectArgument(args.{{this}});{{/each}}{{/if}}{{#if validations}}
+{{#each validations}}
+				utils.{{#with this}}{{validatorType}}(args.{{argName}}{{/with}});{{/each}}{{/if}}{{#if arrayValidations}}
+{{#each arrayValidations}}
+				utils.validateArrayArgument({{#with this}}args.{{argName}}, "{{arrayType}}"{{/with}});{{/each}}{{/if}}
+			};{{/with}}{{/each}}{{/if}}{{#if optionalObjectValidations}}
+{{#each optionalObjectValidations}}{{#with this}}
+			if ( typeof args.{{argName}} !== "undefined" ) {
+				utils.validateObjectArgument(args.{{argName}});
+				{{funcName}}();
+			}{{/with}}{{/each}}{{/if}}{{#if optionalValidations}}
+{{#each optionalValidations}}{{#with this}}
+			if ( typeof args.{{argName}} !== "undefined" ) {
+				utils.{{validatorType}}(args.{{argName}});
+			}{{/with}}{{/each}}{{/if}}{{#if optionalArrayValidations}}
+{{#each optionalArrayValidations}}{{#with this}}
+			if ( typeof args.{{argName}} !== "undefined" ) {
+				utils.validateArrayArgument(args.{{argName}}, "{{arrayType}}");
+			}{{/with}}{{/each}}{{/if}}{{#if objectValidations}}
+{{#each objectValidations}}
 			utils.validateObjectArgument(args.{{this}});{{/each}}{{/if}}{{#if validations}}
 {{#each validations}}
 			utils.{{#with this}}{{validatorType}}(args.{{argName}}{{/with}});{{/each}}{{/if}}{{#if arrayValidations}}

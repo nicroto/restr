@@ -29,11 +29,15 @@ var ParamParser = {
 			result = [];
 
 		Object.keys(conf).forEach(function(name) {
-			var param = conf[name];
-			var parsedParam = self.parseParam(param);
+			var param = conf[name],
+				parsedParam = self.parseParam(param),
+				isOptional = self.isOptionalParam(name);
 
 			parsedParam.place = place;
-			parsedParam.name = name;
+			if ( self.isOptionalParam(name) ) {
+				parsedParam.optional = true;
+			}
+			parsedParam.name = self.parseName(name, isOptional);
 
 			result.push( parsedParam );
 		});
@@ -70,13 +74,30 @@ var ParamParser = {
 		};
 
 		Object.keys(source).forEach( function(key) {
-			var prop = source[key];
-			var param = self.parseParam(prop);
-			param.name = key;
+			var prop = source[key],
+				param = self.parseParam(prop),
+				isOptional = self.isOptionalParam(key);
+
+			if ( isOptional ) {
+				param.optional = true;
+			}
+
+			param.name = self.parseName(key, isOptional);
 			parsedObject.params.push( param );
 		} );
 
 		return parsedObject;
+	},
+
+	parseName: function(name, isOptional) {
+		if ( isOptional ) {
+			name = name.substring(0, name.length - 1);
+		}
+		return name;
+	},
+
+	isOptionalParam: function(name) {
+		return name[name.length - 1] === "?";
 	}
 
 };
